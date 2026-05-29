@@ -2,6 +2,8 @@
 
 A web app that predicts concrete strength instantly in your browser.
 
+**[Try the Live Demo Here](https://concrete-strength-estimator.vercel.app)**
+
 ## What It Does
 
 - Predict concrete compressive strength (MPa) in real-time
