@@ -1,0 +1,11 @@
+# Ignore the private dataset
+datasets/iit_bbs_dataset.csv
+*.csv
+
+# Ignore Python virtual environments
+model_training/venv/
+__pycache__/
+
+# Ignore Next.js build files and node modules
+web-app/node_modules/
+web-app/.next/
