@@ -29,7 +29,6 @@ pip install pandas numpy xgboost onnxmltools onnxruntime scikit-learn
 ```bash
 cd web-app
 npm run dev
-# Open http://localhost:3000
 ```
 
 ## How It Works
@@ -87,7 +86,6 @@ Output:
 ```bash
 cd web-app
 npm run build
-# Deploy to Vercel or any static host
 ```
 
 ## Tech Stack
@@ -113,4 +111,4 @@ npm run build
 
 ## Version
 
-v1.0 - Production Ready
+v1.0 - Initial Commit
