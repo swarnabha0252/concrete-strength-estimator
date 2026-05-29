@@ -2,7 +2,7 @@
 
 A web app that predicts concrete strength instantly in your browser.
 
-**[Try the Live Demo Here](https://concrete-strength-estimator.vercel.app)**
+**[Live Demo](https://concrete-strength-estimator.vercel.app)**
 
 ## What It Does
 
