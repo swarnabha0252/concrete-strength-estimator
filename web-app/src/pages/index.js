@@ -51,14 +51,15 @@ const FEATURE_ORDER = [
 
 
 export default function Home() {
-  const [prediction, setPrediction] = useState(null);
-  const [modelReady, setModelReady] = useState(false);
-  const sessionRef = useRef(null);
-  const isRunningRef = useRef(false);
-  const pendingRef = useRef(false);
-  const categoryNames = Object.keys(ADVANCED_TABS);
-  const [activeCategory, setActiveCategory] = useState(categoryNames[0]);
-  const [activeSection, setActiveSection] = useState('mix');
+   const [prediction, setPrediction] = useState(null);
+   const [modelReady, setModelReady] = useState(false);
+   const [loadingProgress, setLoadingProgress] = useState(0);
+   const sessionRef = useRef(null);
+   const isRunningRef = useRef(false);
+   const pendingRef = useRef(false);
+   const categoryNames = Object.keys(ADVANCED_TABS);
+   const [activeCategory, setActiveCategory] = useState(categoryNames[0]);
+   const [activeSection, setActiveSection] = useState('mix');
 
   const [formData, setFormData] = useState({
     cement: 350, flyash: 0, GGBS: 0, MK: 0, TCM: 350, water: 160,
@@ -99,21 +100,47 @@ export default function Home() {
     });
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    const loadSession = async () => {
-      try {
-        const session = await ort.InferenceSession.create('/concrete_model.onnx');
-        if (!isMounted) return;
-        sessionRef.current = session;
-        setModelReady(true);
-      } catch (error) {
-        console.error('Model Load Error:', error);
-      }
-    };
-    loadSession();
-    return () => { isMounted = false; };
-  }, []);
+   useEffect(() => {
+     let isMounted = true;
+     const loadSession = async () => {
+       try {
+         // Simulate realistic progress that takes time to reach 100%
+         const progressInterval = setInterval(() => {
+           setLoadingProgress((prev) => {
+             if (prev < 30) {
+               return prev + Math.random() * 15; // Slow start
+             } else if (prev < 60) {
+               return prev + Math.random() * 8; // Medium pace
+             } else if (prev < 90) {
+               return prev + Math.random() * 5; // Slower as we approach
+             } else {
+               return prev; // Stop before 100%
+             }
+           });
+         }, 400);
+
+         const session = await ort.InferenceSession.create('/concrete_model.onnx');
+         clearInterval(progressInterval);
+         
+         if (!isMounted) return;
+         sessionRef.current = session;
+         // Jump to 100% when actually ready
+         setLoadingProgress(100);
+         
+         // Immediately show the app once loading is done
+         setTimeout(() => {
+           if (isMounted) {
+             setModelReady(true);
+           }
+         }, 500);
+       } catch (error) {
+         console.error('Model Load Error:', error);
+         setLoadingProgress(0);
+       }
+     };
+     loadSession();
+     return () => { isMounted = false; };
+   }, []);
 
   const runInference = async () => {
     if (!modelReady || !sessionRef.current) return;
@@ -157,87 +184,144 @@ export default function Home() {
         />
         <title>Concrete Strength Estimator</title>
         <style>{`
-          * { box-sizing: border-box; }
-          body { 
-            margin: 0; 
-            background-color: #000000; 
-            color: #f8fafc; 
-            font-family: "IBM Plex Sans", sans-serif; 
-            font-size: 17px;
-            -webkit-font-smoothing: antialiased;
-          }
-          
-          input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-            margin: 8px 0;
-          }
-          input[type=range]:focus {
-            outline: none;
-          }
-          input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: #121212;
-            border-radius: 4px;
-            border: 1px solid #0d0d0d;
-          }
-          input[type=range]::-webkit-slider-thumb {
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: #38bdf8;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -7px;
-            box-shadow: none;
-            transition: transform 0.15s ease, background 0.15s ease;
-            border: 2px solid #050505;
-          }
-          input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.25);
-            background: #7dd3fc;
-          }
+           * { box-sizing: border-box; }
+           body { 
+             margin: 0; 
+             background-color: #000000; 
+             color: #f8fafc; 
+             font-family: "IBM Plex Sans", sans-serif; 
+             font-size: 17px;
+             -webkit-font-smoothing: antialiased;
+           }
+           
+           @keyframes spin {
+             from { transform: rotate(0deg); }
+             to { transform: rotate(360deg); }
+           }
+           
+           input[type=range] {
+             -webkit-appearance: none;
+             width: 100%;
+             background: transparent;
+             margin: 8px 0;
+           }
+           input[type=range]:focus {
+             outline: none;
+           }
+           input[type=range]::-webkit-slider-runnable-track {
+             width: 100%;
+             height: 6px;
+             cursor: pointer;
+             background: #121212;
+             border-radius: 4px;
+             border: 1px solid #0d0d0d;
+           }
+           input[type=range]::-webkit-slider-thumb {
+             height: 18px;
+             width: 18px;
+             border-radius: 50%;
+             background: #38bdf8;
+             cursor: pointer;
+             -webkit-appearance: none;
+             margin-top: -7px;
+             box-shadow: none;
+             transition: transform 0.15s ease, background 0.15s ease;
+             border: 2px solid #050505;
+           }
+           input[type=range]::-webkit-slider-thumb:hover {
+             transform: scale(1.25);
+             background: #7dd3fc;
+           }
 
-          input[type=number] {
-            background: #0b0b0b;
-            border: 1px solid #1a1a1a;
-            color: #f8fafc;
-            border-radius: 8px;
-            padding: 0.35rem 0.5rem;
-            width: 88px;
-            font-size: 0.9rem;
-            font-family: "IBM Plex Mono", monospace;
-          }
-          input[type=number]:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
-          }
-          
-          ::-webkit-scrollbar { width: 8px; }
-          ::-webkit-scrollbar-track { background: #0a0a0a; }
-          ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
-          ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+           input[type=number] {
+             background: #0b0b0b;
+             border: 1px solid #1a1a1a;
+             color: #f8fafc;
+             border-radius: 8px;
+             padding: 0.35rem 0.5rem;
+             width: 88px;
+             font-size: 0.9rem;
+             font-family: "IBM Plex Mono", monospace;
+           }
+           input[type=number]:focus {
+             outline: none;
+             border-color: #38bdf8;
+             box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
+           }
+           
+           ::-webkit-scrollbar { width: 8px; }
+           ::-webkit-scrollbar-track { background: #0a0a0a; }
+           ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 4px; }
+           ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
-          .layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 360px;
-            gap: 2rem;
-            align-items: start;
-          }
-          @media (max-width: 980px) {
-            .layout {
-              grid-template-columns: 1fr;
-            }
-          }
-        `}</style>
+           .layout {
+             display: grid;
+             grid-template-columns: minmax(0, 1fr) 360px;
+             gap: 2rem;
+             align-items: start;
+           }
+           @media (max-width: 980px) {
+             .layout {
+               grid-template-columns: 1fr;
+             }
+           }
+         `}</style>
       </Head>
 
-      <div style={{ minHeight: '100vh', padding: '1.75rem 1.5rem', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: '1100px' }}>
+      <div style={{ minHeight: '100vh', padding: '1.75rem 1.5rem', display: 'flex', justifyContent: 'center', position: 'relative' }}>
+         {/* LOADING SCREEN */}
+         {!modelReady && (
+           <div style={{
+             position: 'fixed',
+             top: 0,
+             left: 0,
+             width: '100%',
+             height: '100%',
+             backgroundColor: 'rgba(0, 0, 0, 0.7)',
+             backdropFilter: 'blur(8px)',
+             display: 'flex',
+             flexDirection: 'column',
+             justifyContent: 'center',
+             alignItems: 'center',
+             zIndex: 9999,
+           }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '2rem',
+              }}>
+                {/* SPINNER */}
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  border: '4px solid rgba(56, 189, 248, 0.2)',
+                  borderTop: '4px solid #38bdf8',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                }} />
+                
+                {/* LOADING TEXT */}
+                <div style={{
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                }}>
+                  <h2 style={{
+                    margin: 0,
+                    fontSize: '1.5rem',
+                    fontWeight: 600,
+                    color: '#e5e7eb',
+                  }}>
+                    Loading Model
+                  </h2>
+                </div>
+              </div>
+           </div>
+         )}
+
+         <div style={{ width: '100%', maxWidth: '1100px' }}>
           
           {/* HEADER SECTION */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -247,7 +331,7 @@ export default function Home() {
               </h1>
             </div>
             <div style={{ fontSize: '0.8rem', color: '#6b7280', fontFamily: '"IBM Plex Mono", monospace' }}>
-              v1.0
+              v1.1
             </div>
           </div>
 
