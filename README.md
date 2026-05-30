@@ -2,6 +2,8 @@
 
 A web app that predicts concrete strength instantly in your browser.
 
+**[Live Demo](https://concrete-strength-estimator.vercel.app)**
+
 ## What It Does
 
 - Predict concrete compressive strength (MPa) in real-time
@@ -29,7 +31,6 @@ pip install pandas numpy xgboost onnxmltools onnxruntime scikit-learn
 ```bash
 cd web-app
 npm run dev
-# Open http://localhost:3000
 ```
 
 ## How It Works
@@ -89,8 +90,22 @@ Output:
 ```bash
 cd web-app
 npm run build
-# Deploy to Vercel or any static host
 ```
+## Data & Methodology
+
+While the raw dataset is kept private for academic/proprietary reasons, the XGBoost model was trained on a robust dataset of concrete mixtures.
+
+**Dataset Overview:**
+- **Source:** Experimental Data set for concrete compressive strength prediction from IIT Bhubaneswar concrete laboratory
+- **Link:** https://data.mendeley.com/datasets/5wkxzmzwnz/2
+- **Size:** 188 unique concrete mix designs
+- **Features:** 15 variables including primary binders (Cement, Fly Ash, GGBS, MK), aggregates (Natural & Recycled), fluids (Water, Superplasticizers), and curing age.
+- **Target Variable:** Compressive Strength (CS) measured in MPa.
+
+**Preprocessing & Training:**
+- The data was split into an 80/20 train-test ratio.
+- String headers were stripped and converted to raw float32 arrays to ensure seamless XGBoost-to-ONNX compilation.
+- The final model achieved an $R^2$ variance score of **0.9324** and an RMSE of **4.35 MPa** on unseen test data.
 
 ## Tech Stack
 
