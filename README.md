@@ -68,6 +68,8 @@ npm run dev
 - If water exceeds 250 kg/m³, TCM adjusts instead
 - All values rounded to 2 decimals
 - Real-time strength prediction with visual progress bar
+- **Loading Screen:** Full-screen loading overlay with blur effect and spinner during initial model load
+- **Realistic Progress:** Simulated progress indicator that gradually increments to 100%
 - Responsive design (desktop & mobile)
 
 ## Train the Model
@@ -113,4 +115,4 @@ npm run build
 
 ## Version
 
-v1.0 - Production Ready
+v1.1 - Loading Screen Enhancement
