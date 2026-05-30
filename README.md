@@ -129,7 +129,7 @@ While the raw dataset is kept private for academic/proprietary reasons, the XGBo
 - TCM adjusts to maintain ratio
 
 ## Version
-v1.1 - Loading Screen Enhancement
+v1.0.1 - Loading Screen Enhancement
 
-v1.0 - Initial Commit
+v1.0.0 - Initial Commit
 
