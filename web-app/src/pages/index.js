@@ -330,7 +330,7 @@ export default function Home() {
               </h1>
             </div>
             <div style={{ fontSize: '0.8rem', color: '#6b7280', fontFamily: '"IBM Plex Mono", monospace' }}>
-              v1.1
+              v1.0.1
             </div>
           </div>
 
