@@ -130,6 +130,6 @@ While the raw dataset is kept private for academic/proprietary reasons, the XGBo
 
 ## Version
 
-v1.1 - Loading Screen Enhancement
-v1.0 - Initial Commit
+-v1.1 - Loading Screen Enhancement
+-v1.0 - Initial Commit
 
