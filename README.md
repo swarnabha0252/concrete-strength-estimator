@@ -116,13 +116,5 @@ npm run build
 ## Version
 
 v1.1 - Loading Screen Enhancement
-- Added full-screen loading overlay with blur effect during model initialization
-- Implemented realistic progress indicator with spinner
-- Smooth UI/UX during initial page load
+v1.0 - Initial Commit
 
-v1.0 - Production Ready
-- Initial release with concrete strength prediction
-- Real-time inference using ONNX model in browser
-- Mix design controls with auto-calculated water-to-cement ratio
-- Advanced parameters for binders and aggregates
-- Responsive design for desktop and mobile

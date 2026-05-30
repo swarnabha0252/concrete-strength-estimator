@@ -104,17 +104,17 @@ export default function Home() {
      let isMounted = true;
      const loadSession = async () => {
        try {
-         // Simulate realistic progress that takes time to reach 100%
+
          const progressInterval = setInterval(() => {
            setLoadingProgress((prev) => {
              if (prev < 30) {
-               return prev + Math.random() * 15; // Slow start
+               return prev + Math.random() * 15;
              } else if (prev < 60) {
-               return prev + Math.random() * 8; // Medium pace
+               return prev + Math.random() * 8;
              } else if (prev < 90) {
-               return prev + Math.random() * 5; // Slower as we approach
+               return prev + Math.random() * 5;
              } else {
-               return prev; // Stop before 100%
+               return prev; 
              }
            });
          }, 400);
@@ -127,7 +127,6 @@ export default function Home() {
          // Jump to 100% when actually ready
          setLoadingProgress(100);
          
-         // Immediately show the app once loading is done
          setTimeout(() => {
            if (isMounted) {
              setModelReady(true);
